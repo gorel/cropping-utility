@@ -1,5 +1,10 @@
 import javax.swing.*;
+import javax.imageio.*;
+import javax.swing.filechooser.*;
 import java.awt.*;
+import java.awt.image.*;
+import java.awt.event.*;
+import java.io.*;
 
 /**
  * Cropping Utility
@@ -15,7 +20,9 @@ public class CroppingUtility implements ActionListener
 
 	//GUI elements
 	private JFrame myFrame;
+	private TransparentPanel boxPanel;
 	
+	private JMenuBar myMenuBar;
 	private JMenuItem openMenuItem;
 	private JMenuItem saveMenuItem;
 	
@@ -70,12 +77,22 @@ public class CroppingUtility implements ActionListener
 	{
 		JFileChooser fileChooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG, PNG, and GIF images", "jpg", "gif", "png");
-		chooser.setFileFilter(filter);
-		int choice = fileChooser.showOpenDialog(parent);
+		fileChooser.setFileFilter(filter);
+		int choice = fileChooser.showOpenDialog(myFrame);
 		if (choice == JFileChooser.APPROVE_OPTION)
 		{
 			//Load the chosen image
-			myImage = ImageIO.read(chooser.getSelectedFile());
+			try
+			{
+				myImage = ImageIO.read(fileChooser.getSelectedFile());
+			}
+			//If an IOException occurs, print a stack trace and exit with error code 1
+			catch(IOException e)
+			{
+				e.printStackTrace();
+				System.exit(1);
+			}
+			
 			myPictureLabel = new JLabel(new ImageIcon(myImage));
 			
 			//Add the image to the JFrame
@@ -91,9 +108,18 @@ public class CroppingUtility implements ActionListener
 	 */
 	private void getCropDimensions()
 	{
-		//TODO: Prompt for the new height
-		//TODO: Prompt for the new width
-		//Warn the user if the new height or width is larger than the original height or width
+		//Prompt for the width of the cropped picture
+		int width = /*TODO:Prompt*/0;
+		
+		//Prompt for the height of the cropped picture
+		int height = /*TODO:Prompt*/0;
+		
+		//TODO:Warn the user if the new height or width is larger than the original height or width
+		
+		//Set up the selection box and show it within the app
+		boxPanel = new TransparentPanel();
+		boxPanel.setSize(width, height);
+		boxPanel.setVisible(true);
 	}
 	
 	/**
@@ -124,6 +150,6 @@ public class CroppingUtility implements ActionListener
 	 */
 	public static void main(String[] args)
 	{
-		
+		new CroppingUtility();
 	}
 }
