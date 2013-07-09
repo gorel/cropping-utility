@@ -30,11 +30,12 @@ public class CroppingUtility implements ActionListener
 	private JLabel myPictureLabel;
 	
 	/**
-	 * Constructor to create a CroppingUtility GUI
+	 * Constructor to create a CroppingUtility program
 	 */
 	public CroppingUtility()
 	{
 		createGUI();
+		getImageChoice();
 	}
 	
 	/**
@@ -57,7 +58,7 @@ public class CroppingUtility implements ActionListener
 		saveMenuItem.addActionListener(this);
 		
 		//Add the menu to the main frame
-		myFrame.add(myMenuBar);
+		myFrame.add(myMenuBar, BorderLayout.NORTH);
 		
 		//Set the default close operation of the JFrame
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,7 +97,7 @@ public class CroppingUtility implements ActionListener
 			myPictureLabel = new JLabel(new ImageIcon(myImage));
 			
 			//Add the image to the JFrame
-			myFrame.add(myPictureLabel);
+			myFrame.add(myPictureLabel, BorderLayout.CENTER);
 			
 			//Get the desired dimensions for the cropped picture
 			getCropDimensions();
@@ -108,11 +109,12 @@ public class CroppingUtility implements ActionListener
 	 */
 	private void getCropDimensions()
 	{
-		//Prompt for the width of the cropped picture
-		int width = /*TODO:Prompt*/0;
+		//Create a HeightAndWidthInputPane object to get the user's width and height dimensions
+		HeightAndWidthInputPane inputPane = new HeightAndWidthInputPane(myImage.getWidth(), myImage.getHeight());
 		
-		//Prompt for the height of the cropped picture
-		int height = /*TODO:Prompt*/0;
+		//Get the height and width from the inputPane
+		int width = inputPane.getWidth();
+		int height = inputPane.getHeight();
 		
 		//TODO:Warn the user if the new height or width is larger than the original height or width
 		
