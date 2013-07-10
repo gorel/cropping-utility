@@ -6,6 +6,9 @@ import java.awt.event.*;
 /**
  * Extension of a MouseInputAdapter which only responds when its JPanel object is dragged by the mouse.
  * @author Logan Gore
+ * TODO: Overload a constructor to move a panel to the mouse's location instead of requiring dragging
+ * TODO: Test the two methods to see which is more intuitive for users
+ * TODO: Don't allow the box to move outside of the bounds of the image
  */
 public class MovementListener extends MouseInputAdapter
 {

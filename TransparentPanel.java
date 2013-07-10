@@ -16,7 +16,11 @@ public class TransparentPanel extends JPanel
 	public TransparentPanel()
 	{
 		setOpaque(false);
+		
+		//Create a new MovementListener object to track when the user drags this panel
 		myListener = new MovementListener(this);
+		
+		//Allow this object to respond to mouse movements with the myListener object
 		addMouseListener(myListener);
 		addMouseMotionListener(myListener);
 	}

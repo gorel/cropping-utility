@@ -12,9 +12,6 @@ public class HeightAndWidthInputPane
 	private int width;
 	private int height;
 	
-	//Whether or not the user gave valid input
-	private boolean valid;
-	
 	//Given values of maximum width and height
 	private int maxWidth;
 	private int maxHeight;
@@ -84,52 +81,62 @@ public class HeightAndWidthInputPane
 	 */
 	private void validateInput()
 	{
-		//Initialize the valid variable that all input so far has been valid
-		valid = true;
-		
 		//Validate the width field
 		try
 		{
-			width = Math.min(Integer.parseInt(widthField.getText()), maxWidth);
+			//Parse the width given by the user
+			int widthFieldVal = Integer.parseInt(widthField.getText());
+			
+			//If the given value is valid, set it as the width
+			if (widthFieldVal < maxWidth && widthFieldVal > 0)
+				width = widthFieldVal;
+			//Otherwise, throw an IllegalArgumentException
+			else
+				throw new IllegalArgumentException("Value in width field is larger than max width.");
 		}
 		catch(NumberFormatException e)
 		{
-			//The input data was not completely valid
-			valid = false;
-			
 			//Set the width to the default value and warn the user
 			width = maxWidth;
 			JOptionPane.showMessageDialog(null, "Warning: width is not an integer.  Using image's default width instead.");
+		}
+		catch(IllegalArgumentException e)
+		{
+			//Set the width to the default value and warn the user
+			width = maxWidth;
+			JOptionPane.showMessageDialog(null, "Warning: " + e.getMessage());		
 		}
 		
 		//Validate the height field
 		try
 		{
-			height = Math.min(Integer.parseInt(heightField.getText()), maxWidth);
+			//Parse the height given by the user
+			int heightFieldVal = Integer.parseInt(heightField.getText());
+			
+			//If the given value is valid, set it as the height
+			if (heightFieldVal < maxHeight)
+				height = heightFieldVal;
+			//Otherwise, set the height as the maxHeight and warn the user
+			else
+				throw new IllegalArgumentException("Value in height field in larger than max height");
 		}
 		catch(NumberFormatException e)
 		{
-			//The input data was not completely valid
-			valid = false;
-			
 			//Set the width to the default value and warn the user
-			height = maxHeight;
+			height = maxHeight - 1;
 			JOptionPane.showMessageDialog(null, "Warning: height is not an integer.  Using image's default height instead.");
 		}
-	}
-	
-	/**
-	 * Getter method to return whether or not the user gave valid input.
-	 * Default behavior: if invalid input was received, the given maxWidth and maxHeight will be returned when calling getWidth() and getHeight().
-	 */
-	public boolean valid()
-	{
-		return valid;
+		catch(IllegalArgumentException e)
+		{
+			//Set the width to the default value and warn the user
+			width = maxWidth - 1;
+			JOptionPane.showMessageDialog(null, "Warning: " + e.getMessage());	
+		}
 	}
 	
 	/**
 	 * Getter method to return the width the user input.
-	 * WARNING: Check for input validation if needed!
+	 * NOTE: Will return maxWidth if the user's input was not valid.
 	 */
 	public int getWidth()
 	{
@@ -138,7 +145,7 @@ public class HeightAndWidthInputPane
 	
 	/**
 	 * Getter method to return the height the user input.
-	 * WARNING: Check for input validation if needed!
+	 * NOTE: Will return maxHeight if the user's input was not valid.
 	 */
 	public int getHeight()
 	{
