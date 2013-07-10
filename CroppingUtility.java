@@ -26,8 +26,13 @@ public class CroppingUtility implements ActionListener
 	private JMenuItem openMenuItem;
 	private JMenuItem saveMenuItem;
 	
+	//Original image
+	private String fileExtension;
 	private BufferedImage myImage;
 	private JLabel myPictureLabel;
+	
+	//New image
+	private BufferedImage subImage;
 	
 	/**
 	 * Constructor to create a CroppingUtility program
@@ -36,6 +41,18 @@ public class CroppingUtility implements ActionListener
 	{
 		createGUI();
 		getImageChoice();
+	}
+	
+	/**
+	 * Overloaded constructor to create a CroppingUtility program with a file already given.
+	 * This will be used for context awareness: When a user loads this program from an image,
+	 * that image will be loaded already, instead of prompting the user for it again when the
+	 * program loads.
+	 * @param filename the filename of the file to load
+	 */
+	public CroppingUtility(String filename)
+	{
+		createGUI();
 	}
 	
 	/**
@@ -76,32 +93,49 @@ public class CroppingUtility implements ActionListener
 	 */
 	private void getImageChoice()
 	{
+		//Create a JFileChooser to get the user's desired image to crop
 		JFileChooser fileChooser = new JFileChooser();
+		
+		//Create a filter to show only JPG, PNG, and GIF images
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG, PNG, and GIF images", "jpg", "gif", "png");
 		fileChooser.setFileFilter(filter);
+		
+		//Get the user's image choice
 		int choice = fileChooser.showOpenDialog(myFrame);
 		if (choice == JFileChooser.APPROVE_OPTION)
 		{
+			//Get the chosen filename
+			File file = fileChooser.getSelectedFile();
+			
 			//Load the chosen image
-			try
-			{
-				myImage = ImageIO.read(fileChooser.getSelectedFile());
-			}
-			//If an IOException occurs, print a stack trace and exit with error code 1
-			catch(IOException e)
-			{
-				e.printStackTrace();
-				System.exit(1);
-			}
-			
-			myPictureLabel = new JLabel(new ImageIcon(myImage));
-			
-			//Add the image to the JFrame
-			myFrame.add(myPictureLabel, BorderLayout.CENTER);
-			
-			//Get the desired dimensions for the cropped picture
-			getCropDimensions();
+			loadImage(file);
 		}
+	}
+	
+	private void loadImage(File file)
+	{			
+		//Get the file extension
+		fileExtension = file.getName().substring(file.getName().lastIndexOf("."));
+	
+		try
+		{
+			//Load the image into a BufferedImage
+			myImage = ImageIO.read(file);
+		}
+		//If an IOException was encountered, tell the user
+		catch(IOException e)
+		{
+			JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());				
+		}
+		
+		//Create a JLabel from the picture
+		myPictureLabel = new JLabel(new ImageIcon(myImage));
+		
+		//Add the image to the JFrame
+		myFrame.add(myPictureLabel, BorderLayout.CENTER);
+		
+		//Get the desired dimensions for the cropped picture
+		getCropDimensions();
 	}
 	
 	/**
@@ -116,8 +150,6 @@ public class CroppingUtility implements ActionListener
 		int width = inputPane.getWidth();
 		int height = inputPane.getHeight();
 		
-		//TODO:Warn the user if the new height or width is larger than the original height or width
-		
 		//Set up the selection box and show it within the app
 		boxPanel = new TransparentPanel();
 		boxPanel.setSize(width, height);
@@ -129,7 +161,27 @@ public class CroppingUtility implements ActionListener
 	 */
 	private void saveNewImage()
 	{
-		//TODO: Save the newly cropped image
+		//Create the subimage based on where the transparent panel has been placed
+		subImage = myImage.getSubimage(boxPanel.getX(), boxPanel.getY(), boxPanel.getWidth(), boxPanel.getHeight());
+		
+		//Create a JFileChooser to save the user's new subimage
+		JFileChooser chooser = new JFileChooser();
+		
+		//Find out where the user wants to save the file
+		int choice = chooser.showSaveDialog(myFrame);
+		if (choice == JFileChooser.APPROVE_OPTION)
+		{
+			//Try to save the new image to file
+			try
+			{
+				ImageIO.write(subImage, fileExtension, chooser.getSelectedFile());
+			}
+			//If an IOException was encountered, tell the user
+			catch(IOException e)
+			{
+				JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());				
+			}
+		}
 	}
 	
 	/**
@@ -149,6 +201,7 @@ public class CroppingUtility implements ActionListener
 	/**
 	 * Start the program.
 	 * @param args the arguments passed to the program when it was started
+	 * TODO: If passed with a filename argument, load that image instead of prompting
 	 */
 	public static void main(String[] args)
 	{
