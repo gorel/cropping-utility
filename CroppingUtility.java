@@ -47,11 +47,27 @@ public class CroppingUtility implements ActionListener
 	{
 		createGUI();
 		
-		if (args.length > 1)
-			for (String arg : args)
-				System.out.println(arg);
-		
-		getImageChoice();
+		//If arguments were given, process them first
+		if (args.length > 0)
+		{
+			//Traverse through the arguments
+			for (int i = 0; i < args.length; i++)
+			{
+				//Input file flag
+				if (args[i].equals("-i"))
+				{
+					//Load the input file image and increment the argument index
+					inputFile = new File(args[i + 1]);
+					loadImage();
+					i++;
+				}
+			}
+		}
+		//The program was opened without context.  Prompt the user for an input file
+		else
+		{
+			getImageChoice();
+		}
 	}
 	
 	/**
@@ -90,7 +106,6 @@ public class CroppingUtility implements ActionListener
 		
 		//Make the frame visible
 		myFrame.setVisible(true);
-		
 	}
 		
 	/**
@@ -118,7 +133,7 @@ public class CroppingUtility implements ActionListener
 	}
 	
 	private void loadImage()
-	{	
+	{
 		try
 		{
 			//Load the image into a BufferedImage
