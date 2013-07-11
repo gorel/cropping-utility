@@ -26,33 +26,31 @@ public class CroppingUtility implements ActionListener
 	private JMenuItem openMenuItem;
 	private JMenuItem saveMenuItem;
 	
+	private JScrollPane myScrollPane;
+	
 	//Original image
+	private File inputFile;
 	private String fileExtension;
 	private BufferedImage myImage;
 	private JLabel myPictureLabel;
 	
 	//New image
 	private BufferedImage subImage;
-	
+		
 	/**
-	 * Constructor to create a CroppingUtility program
+	 * Constructor to create a CroppingUtility program.  Current supported arguments:
+	 * 		-i <input file image>
+	 * @param args the arguments given when the program was started
 	 */
-	public CroppingUtility()
+	public CroppingUtility(String[] args)
 	{
 		createGUI();
+		
+		if (args.length > 1)
+			for (String arg : args)
+				System.out.println(arg);
+		
 		getImageChoice();
-	}
-	
-	/**
-	 * Overloaded constructor to create a CroppingUtility program with a file already given.
-	 * This will be used for context awareness: When a user loads this program from an image,
-	 * that image will be loaded already, instead of prompting the user for it again when the
-	 * program loads.
-	 * @param filename the filename of the file to load
-	 */
-	public CroppingUtility(String filename)
-	{
-		createGUI();
 	}
 	
 	/**
@@ -80,6 +78,9 @@ public class CroppingUtility implements ActionListener
 		//Set the default close operation of the JFrame
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		//Set the default size of the frame
+		myFrame.setSize(600, 800);
+		
 		//Default behavior is to have the frame maximized
 		myFrame.setExtendedState(myFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		
@@ -105,22 +106,19 @@ public class CroppingUtility implements ActionListener
 		if (choice == JFileChooser.APPROVE_OPTION)
 		{
 			//Get the chosen filename
-			File file = fileChooser.getSelectedFile();
+			inputFile = fileChooser.getSelectedFile();
 			
 			//Load the chosen image
-			loadImage(file);
+			loadImage();
 		}
 	}
 	
-	private void loadImage(File file)
-	{			
-		//Get the file extension
-		fileExtension = file.getName().substring(file.getName().lastIndexOf("."));
-	
+	private void loadImage()
+	{	
 		try
 		{
 			//Load the image into a BufferedImage
-			myImage = ImageIO.read(file);
+			myImage = ImageIO.read(inputFile);
 		}
 		//If an IOException was encountered, tell the user
 		catch(IOException e)
@@ -131,8 +129,12 @@ public class CroppingUtility implements ActionListener
 		//Create a JLabel from the picture
 		myPictureLabel = new JLabel(new ImageIcon(myImage));
 		
-		//Add the image to the JFrame
-		myFrame.add(myPictureLabel, BorderLayout.CENTER);
+		//Create a scroll pane to hold the image
+		myScrollPane = new JScrollPane(myPictureLabel);
+		
+		//Add the scroll pane to the main frame
+		myFrame.add(myScrollPane, BorderLayout.CENTER);
+		myFrame.repaint();
 		
 		//Get the desired dimensions for the cropped picture
 		getCropDimensions();
@@ -153,6 +155,8 @@ public class CroppingUtility implements ActionListener
 		//Set up the selection box and show it within the app
 		boxPanel = new TransparentPanel();
 		boxPanel.setSize(width, height);
+		//TODO: This makes the picture invisible
+		//myFrame.add(boxPanel);
 		boxPanel.setVisible(true);
 	}
 	
@@ -171,10 +175,25 @@ public class CroppingUtility implements ActionListener
 		int choice = chooser.showSaveDialog(myFrame);
 		if (choice == JFileChooser.APPROVE_OPTION)
 		{
+			//Get the filename the user chose to save the new image as
+			String outFileName = chooser.getSelectedFile().getName();
+			
+			//If the user specified a file extension, use it
+			if (outFileName.indexOf(".") != -1)
+				fileExtension = outFileName.substring(outFileName.lastIndexOf(".") + 1);
+			//Otherwise, use the file extension of the input file
+			else
+				fileExtension = inputFile.getName().substring(inputFile.getName().lastIndexOf(".") + 1);
+			
 			//Try to save the new image to file
 			try
 			{
-				ImageIO.write(subImage, fileExtension, chooser.getSelectedFile());
+				//Write the file to disk.  Tell the user the file was written successfully
+				if (ImageIO.write(subImage, fileExtension, chooser.getSelectedFile()))
+					JOptionPane.showMessageDialog(null, "New image created successfully.");
+				//The file could not be written.  Throw an IOException
+				else
+					throw new IOException("Could not write output file (Unknown cause).");
 			}
 			//If an IOException was encountered, tell the user
 			catch(IOException e)
@@ -205,6 +224,6 @@ public class CroppingUtility implements ActionListener
 	 */
 	public static void main(String[] args)
 	{
-		new CroppingUtility();
+		new CroppingUtility(args);
 	}
 }
