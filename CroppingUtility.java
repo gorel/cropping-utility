@@ -24,6 +24,7 @@ public class CroppingUtility implements ActionListener
 	
 	private JMenuBar myMenuBar;
 	private JMenuItem openMenuItem;
+	private JMenuItem setDimensionsItem;
 	private JMenuItem saveMenuItem;
 	
 	private JScrollPane myScrollPane;
@@ -64,12 +65,15 @@ public class CroppingUtility implements ActionListener
 		//Create the menu
 		myMenuBar = new JMenuBar();
 		openMenuItem = new JMenuItem("Open");
+		setDimensionsItem = new JMenuItem("Set Dimensions");
 		saveMenuItem = new JMenuItem("Save As");
 		myMenuBar.add(openMenuItem);
+		myMenuBar.add(setDimensionsItem);
 		myMenuBar.add(saveMenuItem);
 		
 		//Add action listeners to the menu items
 		openMenuItem.addActionListener(this);
+		setDimensionsItem.addActionListener(this);
 		saveMenuItem.addActionListener(this);
 		
 		//Add the menu to the main frame
@@ -79,7 +83,7 @@ public class CroppingUtility implements ActionListener
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//Set the default size of the frame
-		myFrame.setSize(600, 800);
+		myFrame.setSize(800, 600);
 		
 		//Default behavior is to have the frame maximized
 		myFrame.setExtendedState(myFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -134,7 +138,6 @@ public class CroppingUtility implements ActionListener
 		
 		//Add the scroll pane to the main frame
 		myFrame.add(myScrollPane, BorderLayout.CENTER);
-		myFrame.repaint();
 		
 		//Get the desired dimensions for the cropped picture
 		getCropDimensions();
@@ -145,16 +148,23 @@ public class CroppingUtility implements ActionListener
 	 */
 	private void getCropDimensions()
 	{
+		//If an image hasn't been loaded yet, tell the user
+		if (myImage == null)
+		{
+			JOptionPane.showMessageDialog(null, "No image has been loaded yet.  Please load an image first.");
+			return;
+		}
+		
 		//Create a HeightAndWidthInputPane object to get the user's width and height dimensions
 		HeightAndWidthInputPane inputPane = new HeightAndWidthInputPane(myImage.getWidth(), myImage.getHeight());
 		
 		//Get the height and width from the inputPane
-		int width = inputPane.getWidth();
-		int height = inputPane.getHeight();
+		cropWidth = inputPane.getWidth();
+		cropHeight = inputPane.getHeight();
 		
 		//Set up the selection box and show it within the app
 		boxPanel = new TransparentPanel();
-		boxPanel.setSize(width, height);
+		boxPanel.setSize(cropWidth, cropHeight);
 		//TODO: This makes the picture invisible
 		//myFrame.add(boxPanel);
 		boxPanel.setVisible(true);
@@ -165,6 +175,20 @@ public class CroppingUtility implements ActionListener
 	 */
 	private void saveNewImage()
 	{
+		//If an image hasn't been loaded yet, tell the user and return
+		if (myImage == null)
+		{
+			JOptionPane.showMessageDialog(null, "No image has been loaded yet.  Please load an image first.");
+			return;
+		}
+		
+		//If dimensions haven't been set yet, tell the user and return
+		if (cropWidth == 0 || cropHeight == 0)
+		{
+			JOptionPane.showMessageDialog(null, "No dimensions have been set yet.");
+			return;
+		}
+		
 		//Create the subimage based on where the transparent panel has been placed
 		subImage = myImage.getSubimage(boxPanel.getX(), boxPanel.getY(), boxPanel.getWidth(), boxPanel.getHeight());
 		
@@ -212,6 +236,9 @@ public class CroppingUtility implements ActionListener
 		//If the user hit the open button, load a new image
 		if (e.getSource() == openMenuItem)
 			getImageChoice();
+		//If the user hit the set dimensions button, reprompt them for new dimensions
+		else if (e.getSource() == setDimensionsItem)
+			getCropDimensions();
 		//If the user hit the save button, save the cropped image
 		else if (e.getSource() == saveMenuItem)
 			saveNewImage();
