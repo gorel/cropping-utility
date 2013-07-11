@@ -92,7 +92,7 @@ public class HeightAndWidthInputPane
 				width = widthFieldVal;
 			//Otherwise, throw an IllegalArgumentException
 			else
-				throw new IllegalArgumentException("Value in width field is larger than max width.");
+				throw new IllegalArgumentException("Value in width field is larger than image width.");
 		}
 		catch(NumberFormatException e)
 		{
@@ -118,7 +118,7 @@ public class HeightAndWidthInputPane
 				height = heightFieldVal;
 			//Otherwise, set the height as the maxHeight and warn the user
 			else
-				throw new IllegalArgumentException("Value in height field in larger than max height");
+				throw new IllegalArgumentException("Value in height field in larger than image height");
 		}
 		catch(NumberFormatException e)
 		{
