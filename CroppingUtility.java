@@ -21,7 +21,7 @@ public class CroppingUtility implements ActionListener
 
 	//GUI elements
 	private JFrame myFrame;
-	private TransparentPanel boxPanel;
+	private EditPanel editPanel;
 	
 	private JMenuBar myMenuBar;
 	private JMenuItem openMenuItem;
@@ -195,11 +195,14 @@ public class CroppingUtility implements ActionListener
 		cropHeight = inputPane.getHeight();
 		
 		//Set up the selection box and show it within the app
-		boxPanel = new TransparentPanel();
-		boxPanel.setSize(cropWidth, cropHeight);
-		//TODO: This makes the picture invisible
-		//myFrame.add(boxPanel);
-		boxPanel.setVisible(true);
+		editPanel = new EditPanel(cropWidth, cropHeight, myImage.getWidth(), myImage.getHeight());
+		
+		//Make the edit pane visible
+		myFrame.setGlassPane(editPanel);
+		editPanel.setVisible(true);
+		
+		//Repack the frame
+		myFrame.pack();
 	}
 	
 	/**
@@ -222,7 +225,7 @@ public class CroppingUtility implements ActionListener
 		}
 		
 		//Create the subimage based on where the transparent panel has been placed
-		subImage = myImage.getSubimage(boxPanel.getX(), boxPanel.getY(), boxPanel.getWidth(), boxPanel.getHeight());
+		subImage = myImage.getSubimage(editPanel.getX(), editPanel.getY(), editPanel.getWidth(), editPanel.getHeight());
 		
 		//Create a JFileChooser to save the user's new subimage
 		JFileChooser chooser = new JFileChooser();
