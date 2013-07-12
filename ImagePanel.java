@@ -30,8 +30,13 @@ public class ImagePanel extends JPanel
 		{
 			JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());				
 		}
+		
+		//TODO: This isn't properly allowing scrolling
 		setSize(myImage.getWidth(), myImage.getHeight());
 		setAutoscrolls(true);
+		
+		//Set the layout manager to null to allow repositioning the edit panel
+		setLayout(null);
 	}
 	
 	/**
