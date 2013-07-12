@@ -16,18 +16,27 @@ public class MovementListener extends MouseInputAdapter
 	private JPanel myPanel;
 	
 	//The starting location when the mouse is beginning to be dragged
-	int initialX;
-	int initialY;
+	private int initialX;
+	private int initialY;
+	
+	//The maximum distances to allow the JPanel to travel
+	private int widthDistance;
+	private int heightDistance;
 	
 	//Whether or not the JPanel is currently being dragged
 	private boolean dragging = false;
 	
 	/**
 	 * Create a MovementListener object to respond to the given panel
+	 * @param panel the JPanel to create a listener for
+	 * @param width the maximum width distance to allow the JPanel to move
+	 * @param height the maximum height distance to allow the JPanel to move
 	 */
-	public MovementListener(JPanel panel)
+	public MovementListener(JPanel panel, int width, int height)
 	{
 		myPanel = panel;
+		widthDistance = width;
+		heightDistance = height;
 	}
 	
 	/**
@@ -61,11 +70,20 @@ public class MovementListener extends MouseInputAdapter
 		int xdiff = e.getX() - initialX;
 		int ydiff = e.getY() - initialY;
 		
-		if (dragging)
+		if (dragging && valid(xdiff, ydiff))
 		{
 			myPanel.setLocation(myPanel.getX() + xdiff, myPanel.getY() + ydiff);
 		}
 		initialX = e.getX();
 		initialY = e.getY();
+	}
+	
+	/**
+	 * Whether or not the movement is a valid movement for the JPanel
+	 */
+	private boolean valid(int xdiff, int ydiff)
+	{
+		//If the differences won't cause the JPanel to go out of bounds, return true
+		return ((myPanel.getX() + xdiff > 0) && (myPanel.getY() + ydiff > 0) && (myPanel.getX() + xdiff < widthDistance) && (myPanel.getY() + ydiff < heightDistance));
 	}
 }
