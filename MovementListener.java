@@ -84,6 +84,9 @@ public class MovementListener extends MouseInputAdapter
 	private boolean valid(int xdiff, int ydiff)
 	{
 		//If the differences won't cause the JPanel to go out of bounds, return true
-		return ((myPanel.getX() + xdiff > 0) && (myPanel.getY() + ydiff > 0) && (myPanel.getX() + xdiff < widthDistance) && (myPanel.getY() + ydiff < heightDistance));
+		return ((myPanel.getX() + xdiff > 0) &&
+				(myPanel.getY() + ydiff > 0) &&
+				(myPanel.getX() + myPanel.getWidth() + xdiff < widthDistance) &&
+				(myPanel.getY() + myPanel.getHeight() + ydiff < heightDistance));
 	}
 }
