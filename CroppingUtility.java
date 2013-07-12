@@ -31,23 +31,38 @@ public class CroppingUtility implements ActionListener
 	
 	//Original image
 	private File inputFile;
-	private String fileExtension;
 	private BufferedImage myImage;
-	private JLabel myPictureLabel;
+	private String fileExtension;
+	private ImagePanel imagePanel;
 	
 	//New image
 	private BufferedImage subImage;
 		
 	/**
-	 * Constructor to create a CroppingUtility program.  Current supported arguments:
-	 * 		-i <input file image>
+	 * Constructor to create a CroppingUtility program.
 	 * @param args the arguments given when the program was started
 	 */
 	public CroppingUtility(String[] args)
 	{
 		createGUI();
 		
-		//If arguments were given, process them first
+		//Process any command line arguments first
+		processArgs(args);
+		
+		//The program was opened without context.  Prompt the user for an input file
+		if (inputFile == null)
+		{
+			getImageChoice();
+		}
+	}
+	
+	/**
+	 * Process a list of arguments from the command line.
+	 * Current supported arguments:
+	 * 		-i <input file image>
+	 */
+	private void processArgs(String[] args)
+	{
 		if (args.length > 0)
 		{
 			//Traverse through the arguments
@@ -62,11 +77,6 @@ public class CroppingUtility implements ActionListener
 					i++;
 				}
 			}
-		}
-		//The program was opened without context.  Prompt the user for an input file
-		else
-		{
-			getImageChoice();
 		}
 	}
 	
@@ -132,11 +142,14 @@ public class CroppingUtility implements ActionListener
 		}
 	}
 	
+	/**
+	 * Loads the chosen image into the GUI.
+	 */
 	private void loadImage()
 	{
+		//Load the input file into a BufferedImage object
 		try
 		{
-			//Load the image into a BufferedImage
 			myImage = ImageIO.read(inputFile);
 		}
 		//If an IOException was encountered, tell the user
@@ -144,12 +157,12 @@ public class CroppingUtility implements ActionListener
 		{
 			JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());				
 		}
-		
-		//Create a JLabel from the picture
-		myPictureLabel = new JLabel(new ImageIcon(myImage));
+	
+		//Load the imagePanel
+		imagePanel = new ImagePanel(myImage);
 		
 		//Create a scroll pane to hold the image
-		myScrollPane = new JScrollPane(myPictureLabel);
+		myScrollPane = new JScrollPane(imagePanel);
 		
 		//Add the scroll pane to the main frame
 		myFrame.add(myScrollPane, BorderLayout.CENTER);
