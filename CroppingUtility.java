@@ -11,6 +11,7 @@ import java.io.*;
  * Given an image and dimension size, crop a picture down to a desired resolution!
  * Useful for making backgrounds out of large pictures by highlighting desired areas.
  * @author Logan Gore
+ * !!!TODO: BUG: Image not scrollable!!!
  */
 public class CroppingUtility implements ActionListener
 {
@@ -162,10 +163,13 @@ public class CroppingUtility implements ActionListener
 		imagePanel = new ImagePanel(myImage);
 		
 		//Create a scroll pane to hold the image
-		myScrollPane = new JScrollPane(imagePanel);
+		myScrollPane = new JScrollPane(imagePanel);		
 		
 		//Add the scroll pane to the main frame
 		myFrame.add(myScrollPane, BorderLayout.CENTER);
+		
+		//Pack the frame to make the image visible
+		myFrame.pack();
 		
 		//Get the desired dimensions for the cropped picture
 		getCropDimensions();

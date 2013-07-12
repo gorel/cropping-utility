@@ -30,6 +30,8 @@ public class ImagePanel extends JPanel
 		{
 			JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());				
 		}
+		setSize(myImage.getWidth(), myImage.getHeight());
+		setAutoscrolls(true);
 	}
 	
 	/**
