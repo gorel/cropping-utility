@@ -15,6 +15,10 @@ public class MovementListener extends MouseInputAdapter
 	//JPanel this MovementListener should respond to
 	private JPanel myPanel;
 	
+	//The starting location when the mouse is beginning to be dragged
+	int initialX;
+	int initialY;
+	
 	//Whether or not the JPanel is currently being dragged
 	private boolean dragging = false;
 	
@@ -53,9 +57,15 @@ public class MovementListener extends MouseInputAdapter
 	 */
 	public void mouseDragged(MouseEvent e)
 	{
+		//Find the change in direction since the last mouse poll
+		int xdiff = e.getX() - initialX;
+		int ydiff = e.getY() - initialY;
+		
 		if (dragging)
 		{
-			myPanel.setLocation(e.getPoint());
+			myPanel.setLocation(myPanel.getX() + xdiff, myPanel.getY() + ydiff);
 		}
+		initialX = e.getX();
+		initialY = e.getY();
 	}
 }
