@@ -53,7 +53,12 @@ public class EditPanel extends JPanel
 	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		g.setColor(Color.RED);
-		g.drawRect(getX(), getY(), myWidth, myHeight);
+		
+		Graphics2D g2 = (Graphics2D) g;
+		
+		//Create a red box to show the bounds of the cropping frame
+		g2.setColor(Color.RED);
+		g2.setStroke(new BasicStroke(10F));
+		g2.drawRect(getX(), getY(), myWidth, myHeight);
 	}
 }
