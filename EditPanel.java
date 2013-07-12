@@ -10,6 +10,9 @@ public class EditPanel extends JPanel
 	//Panel width and height
 	private int myWidth;
 	private int myHeight;
+	
+	//Rectangle to show bounds of this panel
+	private Rectangle myRectangle;
 
 	//MovementListener to track mouse movements
 	private MovementListener myListener;
@@ -18,6 +21,8 @@ public class EditPanel extends JPanel
 	 * Constructor to create an EditPanel object
 	 * @param width the width of the panel
 	 * @param height the height of the panel
+	 * @param parentWidth the width of the parent this panel will sit in (needed for bounds checking)
+	 * @param parentHeight the height of the parent this panel will sit in (needed for bounds checking)
 	 */
 	public EditPanel(int width, int height, int parentWidth, int parentHeight)
 	{
@@ -27,6 +32,7 @@ public class EditPanel extends JPanel
 		//Set the size of the panel
 		setSize(myWidth, myHeight);
 	
+		//Don't let this panel overwrite the image
 		setOpaque(false);
 		
 		//Create a new MovementListener object to track when the user drags this panel
@@ -37,10 +43,17 @@ public class EditPanel extends JPanel
 		addMouseMotionListener(myListener);
 	}
 	
+	public int getWidth()
+	{return myWidth;}
+	
+	public int getHeight()
+	{return myHeight;}
+	
 	@Override
 	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
+		g.setColor(Color.RED);
 		g.drawRect(getX(), getY(), myWidth, myHeight);
 	}
 }
