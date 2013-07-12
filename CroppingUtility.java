@@ -225,7 +225,7 @@ public class CroppingUtility implements ActionListener
 		}
 		
 		//Create the subimage based on where the transparent panel has been placed
-		subImage = myImage.getSubimage(editPanel.getX(), editPanel.getY(), editPanel.getWidth(), editPanel.getHeight());
+		subImage = myImage.getSubimage(editPanel.getX(), editPanel.getY(), cropWidth, cropHeight);
 		
 		//Create a JFileChooser to save the user's new subimage
 		JFileChooser chooser = new JFileChooser();
