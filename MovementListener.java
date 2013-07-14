@@ -46,8 +46,7 @@ public class MovementListener extends MouseInputAdapter
 	 */
 	public void mousePressed(MouseEvent e)
 	{
-		Rectangle panelRect = myPanel.getBounds();
-		if (panelRect.contains(e.getPoint()))
+		if (myPanel.getBounds().contains(e.getPoint()))
 			dragging = true;
 	}
 	
@@ -70,10 +69,25 @@ public class MovementListener extends MouseInputAdapter
 		int xdiff = e.getX() - initialX;
 		int ydiff = e.getY() - initialY;
 		
-		if (dragging && valid(xdiff, ydiff))
+		//If the panel is being dragged and the movement is valid, move the panel
+		if (dragging && valid(myPanel.getX() + xdiff, myPanel.getY() + ydiff))
 		{
 			myPanel.setLocation(myPanel.getX() + xdiff, myPanel.getY() + ydiff);
 		}
+		
+		//Set the initial point as this mouse poll
+		initialX = e.getX();
+		initialY = e.getY();
+	}
+	
+	/**
+	 * Update the current position of the mouse.
+	 * This is used to track differences in movement for calculating how the panel needs to move.
+	 * @param e the MouseEvent that occurred
+	 */
+	public void mouseMoved(MouseEvent e)
+	{
+		//Set the initial point as this mouse poll
 		initialX = e.getX();
 		initialY = e.getY();
 	}
@@ -81,12 +95,12 @@ public class MovementListener extends MouseInputAdapter
 	/**
 	 * Whether or not the movement is a valid movement for the JPanel
 	 */
-	private boolean valid(int xdiff, int ydiff)
+	private boolean valid(int xpos, int ypos)
 	{
 		//If the differences won't cause the JPanel to go out of bounds, return true
-		return ((myPanel.getX() + xdiff > 0) &&
-				(myPanel.getY() + ydiff > 0) &&
-				(myPanel.getX() + myPanel.getWidth() + xdiff < widthDistance) &&
-				(myPanel.getY() + myPanel.getHeight() + ydiff < heightDistance));
+		return ((xpos > 0) &&
+				(ypos > 5) &&
+				(xpos + myPanel.getWidth() < widthDistance) &&
+				(ypos + myPanel.getHeight() < heightDistance));
 	}
 }

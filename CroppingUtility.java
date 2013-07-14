@@ -197,7 +197,7 @@ public class CroppingUtility implements ActionListener
 		//Set up the selection box and show it within the app
 		editPanel = new EditPanel(cropWidth, cropHeight, myImage.getWidth(), myImage.getHeight());
 		
-		//Make the edit pane visible
+		//Make the edit panel visible
 		myFrame.setGlassPane(editPanel);
 		editPanel.setVisible(true);
 		
